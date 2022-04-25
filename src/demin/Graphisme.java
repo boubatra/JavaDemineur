@@ -3,7 +3,6 @@ import java.awt.image.*;
 import java.awt.*;
 
 //Cette classe contient tous les graphismes des cases
-//Les images sont crées à partir d'un GraphicsConfiguration du JFrame
 public class Graphisme {
 
   public static VolatileImage drapeau, question, questionSel, mine, boum,
@@ -11,7 +10,7 @@ public class Graphisme {
   public static VolatileImage[] chiffre = new VolatileImage[9];
   private Color[] couleurs = new Color[8];
 
-  public static Color dessus = new Color(214, 208, 200); //couleur du "dessus" des cases
+  public static Color dessus = new Color(214, 208, 200); // couleur de la case
   
 
   public Graphisme(GraphicsConfiguration gr) {
@@ -123,7 +122,7 @@ public class Graphisme {
     g.drawString("?", 5, 12);
     g.dispose();
 
-    //mine
+    //case vide
     mine = gr.createCompatibleVolatileImage(16, 16);
     g = (Graphics2D) mine.getGraphics();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -157,7 +156,7 @@ public class Graphisme {
     g.drawLine(6, 6, 6, 6);
     g.dispose();
 
-    //boum
+    //mine selectionnée
     boum = gr.createCompatibleVolatileImage(16, 16);
     g = (Graphics2D) boum.getGraphics();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

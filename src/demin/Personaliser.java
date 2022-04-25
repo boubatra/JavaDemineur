@@ -5,7 +5,7 @@ import javax.swing.border.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//dialogue pour personnaliser la taille
+//PERSONNALISATION DU JEU
 public class Personaliser extends JDialog implements ActionListener {
   private JPanel panel1 = new JPanel();
   private GridBagLayout gridBagLayout1 = new GridBagLayout();
@@ -113,11 +113,11 @@ public class Personaliser extends JDialog implements ActionListener {
         int nMines=Integer.parseInt(m.getText());
         if (nMines<0) nMines=0;
         if (nMines>nL*nH) nMines=nL*nH;
-        demin.dispose();// on détruit le démineur en cours
+        demin.dispose();// ferme la fenetre
         System.gc();
-        Demineur demineur = new Demineur(nH,nL,nMines,4);//on créé le nouveau
+        Demineur demineur = new Demineur(nH,nL,nMines,4);//lance le jeu
       }
-      catch (Exception exc) {//retournée par parseInt(String)
+      catch (Exception exc) {//si erreur de saisie
         this.setTitle("Valeurs incorrectes");
       }
     }

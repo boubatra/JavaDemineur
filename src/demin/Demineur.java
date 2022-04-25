@@ -98,15 +98,15 @@ public class Demineur
     }
   }
 
-  //initialises le jeux
+  //initialisation du jeux
   public void nouveau() {
     temps.cancel(); //Timer à 0
     boutonNouveau.setIcon(cool); //Icon par defaut du bouton
-    nDrapeau = 0; //reinitialisation des principaux paramètres
+    nDrapeau = 0; //nombre de drapeaux poses
     nCases = HAUTEUR * LARGEUR;
     affMines.setValeur(nMines);
     affTemps.setValeur(0);
-    panneauJeux.setVisible(true); //peut être à false en raison de la pause
+    panneauJeux.setVisible(true); //affichage du panneau de jeux
     pause.setSelected(false);
 
     //Generation des mines
@@ -123,8 +123,8 @@ public class Demineur
     for (int i = 0; i < HAUTEUR; i++) {
       for (int j = 0; j < LARGEUR; j++) {
         jeux[i][j].reset();
-        jeux[i][j].removeMouseListener(this); //necessaire pour eviter un bug lors de l'appel de nouveau() une 2ème fois
-        jeux[i][j].addMouseListener(this); //pour les clics!!!
+        jeux[i][j].removeMouseListener(this); //suppression du listener sur les cases
+        jeux[i][j].addMouseListener(this); //ajout du listener sur les cases
         if (mines.charAt(i * LARGEUR + j) == '1') {
           jeux[i][j].setMine(true);
         }
@@ -188,9 +188,9 @@ public class Demineur
 
     this.addWindowListener(this);
 
-    int tailleX = LARGEUR * 16 + 20; //20 pour la marge
+    int tailleX = LARGEUR * 16 + 20; //largeur de la fenetre
     int tailleY = HAUTEUR * 16 + 20;
-    if (tailleX < 160) tailleX = 150; //taille minimum en largeur
+    if (tailleX < 160) tailleX = 150; //largeur minimum
 
     this.setSize(tailleX + 6, tailleY + 50 + 23 + 25); //6=largeur du cadre de la fenetre, 25=hauteur de la barre windows
     this.setTitle("Demineur");
@@ -277,8 +277,8 @@ public class Demineur
   //Retourne le reperage de la case sous le clic de la souris si elle existe
   //(-1,-1) sinon
   public int[] caseClic(int x, int y) {
-    int OFFSETX = (int) jeux[0][0].getX() + 3; //decalage par rapport au coin en haut à gauche de la fenetre
-    int OFFSETY = (int) jeux[0][0].getY() + 22;
+    int OFFSETX = (int) jeux[0][0].getX() + 3; //3=largeur du cadre de la fenetre
+    int OFFSETY = (int) jeux[0][0].getY() + 22; //22=hauteur du cadre de la fenetre
     int posx = -1, posy = -1;
     if (x - OFFSETX >= 0) posx = (x - OFFSETX) / 16;
     if (posx >= LARGEUR) posx = -1;
@@ -402,7 +402,7 @@ public class Demineur
         catch (Exception exc) {}
       }
     }
-    catch (java.lang.ClassCastException ex) {} //si clic n'import où
+    catch (java.lang.ClassCastException ex) {} //si on est pas au dessus d'un panneau
   }
 
   public void mouseReleased(MouseEvent e) {
@@ -416,19 +416,19 @@ public class Demineur
 
     try {
       int x = (int) ( (JPanel) e.getSource()).getLocation().getX() + e.getX() +
-          3; //genère des exceptions à cause du cast
+          3; //retourne une exception si on est pas au dessus d'un panneau
       int y = (int) ( (JPanel) e.getSource()).getLocation().getY() + e.getY() +
           22;
-      int[] coord = caseClic(x, y); //on recupère les coordonnees
-      boutonNouveau.setIcon(cool); //remise du bouton sur l'icone cool
-      if (coord[0] != -1 && coord[1] != -1) { //si on est au dessus d'une case
+      int[] coord = caseClic(x, y); //coordonnees de la case enfoncee enregistrees dans coord
+      boutonNouveau.setIcon(cool); //bouton
+      if (coord[0] != -1 && coord[1] != -1) { //si on a clique sur une case
         y = coord[1];
         x = coord[0];
-        if (e.getButton() == e.BUTTON1) { //si clic gauche, on decouvre
+        if (e.getButton() == e.BUTTON1) { //si on a clique gauche
           decouvre(y, x);
           repaint();
         }
-        jeux[y][x].setSelected(false); //on deselctionne la case ainsi que celle de la memoire casesSelectionnees
+        jeux[y][x].setSelected(false); //on deselectionne la case
         try {
           jeux[casesSelectionnees[0][0]][casesSelectionnees[0][1]].setSelected(false);
         }
@@ -472,7 +472,7 @@ public class Demineur
   public void mouseExited(MouseEvent e) {
   }
 
-  //declenchee par un appuie sur le bouton
+  //Methode qui retourne les coordonnees de la case cliquee
   void boutonNouveau_actionPerformed(ActionEvent e) {
     if (!pause.isSelected()) nouveau();
   }
@@ -554,7 +554,7 @@ public class Demineur
         for (int j = 0; j < LARGEUR; j++) {
           jeux[i][j].removeMouseListener(this); //on bloque les cases
           jeux[i][j].setBlocked(true);
-          if (jeux[i][j].isMine()) jeux[i][j].setEtat(2); //om met des drapeaux partout!!
+          if (jeux[i][j].isMine()) jeux[i][j].setEtat(2); //on affiche les mines
         }
       }
     }

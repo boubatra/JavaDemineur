@@ -11,7 +11,7 @@ public class Temps implements Runnable {
   public void run() {
     while (marche) {
       try {
-        thread.sleep(1000);
+        thread.sleep(1000);//On attend 1 seconde
         if (threadSuspended) {
           synchronized(this) {
             while (threadSuspended)
@@ -21,7 +21,7 @@ public class Temps implements Runnable {
       }
       catch(java.lang.InterruptedException e) {}
       int time = aff.getValeur();
-      if (marche && time<999) {//faire plus de 999s, c'est quand même beaucoup...
+      if (marche && time<999) {//si le compteur n'est pas arrêté au bout de 999 secondes
         aff.setValeur(time+1);
       }
 

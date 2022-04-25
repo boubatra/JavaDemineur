@@ -6,20 +6,17 @@ import javax.swing.event.*;
 import java.awt.image.*;
 
 
-//C'est une case de jeux en partie autonome
-//Elle g�re elle m�me certain ev�nements de la souris
-//on peut en faire un Bean avec le fichier D�minCase.mf
 public class DeminCase
     extends JPanel
     implements MouseListener {
 
-  private int etat = 0; //0 = rien; 1==enfonc�e; 2=drapeau; 3=?; 4=boum; 5=mine; 6=erreur de drapeau
-  private boolean mine = false; //Si il y a une mine
-  private boolean selected = false; //case enfonc�e
-  private boolean blocked = false; //bloqu�e
-  private int chiffre = 0; //chiffre affich� s'il doit �tre affich�
+  private int etat = 0; // 0 = vide, 1 = bombe, 2 = vide avec bombe, 3 = vide avec nombre
+  private boolean mine = false; // true si la case contient une bombe
+  private boolean selected = false; // true si la case est sélectionnée
+  private boolean blocked = false; // true si la case est bloquée
+  private int chiffre = 0; // nombre de bombes autour de la case
 
-  private Graphisme gr = null; //l'objet qui contient les graphismes. Il est indiqu� par setGraphisme(Graphisme)
+  private Graphisme gr = null; // objet graphique
   
   public DeminCase() {
     try {
@@ -33,7 +30,7 @@ public class DeminCase
 
   private void jbInit() throws Exception {
     this.setBackground(Graphisme.dessus);
-    this.setMaximumSize(new Dimension(16, 16)); //On impose la taille
+    this.setMaximumSize(new Dimension(16, 16)); // taille de la case
     this.setMinimumSize(new Dimension(16, 16));
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(16, 16));
@@ -51,13 +48,13 @@ public class DeminCase
   }
 
   public void mouseReleased(MouseEvent e) {
-    //D�selctionne la cases
+    //Déselectionne la case si on relâche le clique
     selected = false;
     repaint();
   }
 
   public void mouseEntered(MouseEvent e) {
-    //Si la case est relev�e est que la souris passe dessus avec le clic gauche, on s�l�ctionne
+    //Affiche la case si on passe la souris dessus
     if (e.getModifiersEx() == 16 && etat != 1 && etat != 2 && !blocked) {
       selected = true;
       repaint();
@@ -65,7 +62,7 @@ public class DeminCase
   }
 
   public void mouseExited(MouseEvent e) {
-    //pas fin mais efficace
+    //Déselectionne la case si on quitte la souris
     selected = false;
     repaint();
   }
@@ -104,14 +101,10 @@ public class DeminCase
   }
 
   public void paintComponent(Graphics g/*ra*/) {
-    super.paintComponent(g/*ra*/);
-    /*Graphics2D g = (Graphics2D) gra;
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                       RenderingHints.VALUE_ANTIALIAS_ON);
-    g.setStroke(new BasicStroke(1.5f));*/
+    super.paintComponent(g);
     if (gr != null) {
-      if (!selected) { //case non enfonc�e
-        if (etat == 0) { //normal
+      if (!selected) { // si la case n'est pas sélectionnée
+        if (etat == 0) { // si la case est vide
           g.setColor(Color.white); //bordure haut et gauche blanche
           g.drawLine(0, 0, 0, 15);
           g.drawLine(0, 0, 15, 0);
@@ -123,16 +116,16 @@ public class DeminCase
         else if (etat == 4) g.drawImage(gr.boum, 0, 0, null); //mine sur fond rouge
         else if (etat == 5) g.drawImage(gr.mine, 0, 0, null); //mine
       }
-      else { //case enfonc�e
+      else { // si la case est sélectionnée
         if (etat == 3) g.drawImage(gr.questionSel, 0, 0, null); //?
-        else if (etat != 1) { //autre cas de case relev�e normalement, seul le cas etat==0 en raison des conditions du reste du programme
+        else if (etat != 1) { // du reste du programme
           g.setColor(Color.gray); //bordure haut et gauche grise
           g.drawLine(0, 0, 0, 15);
           g.drawLine(0, 0, 15, 0);
         }
       }
     }
-    //g.setStroke(new BasicStroke(1.5f));
+    //else System.out.println("gr == null");
     g.setColor(Color.darkGray); //bordure bas et droite
     g.drawLine(0, 15, 15, 15);
     g.drawLine(15, 0, 15, 15);
@@ -152,7 +145,7 @@ public class DeminCase
   }
 
 
-  public void reset() { //remise � zero des principaux param�tres
+  public void reset() { // remet la case à 0
     this.etat = 0;
     this.selected = false;
     setMine(false);
